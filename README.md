@@ -10,7 +10,7 @@
 
 In the vptree folder Type:
 
-`>make
+`>make lib
 
 
 It will automatically create the libraries for the tester

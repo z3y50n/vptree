@@ -4,4 +4,14 @@
 
 ### Dimitrios Papageorgiou 8884
 
-## Email: dim_papag@windowslive.com
+### Email: dim_papag@windowslive.com
+
+#### Usage
+
+In the vptree folder Type:
+
+`>make
+
+
+It will automatically create the libraries for the tester
+

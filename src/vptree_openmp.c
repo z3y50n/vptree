@@ -10,39 +10,11 @@
 #include "../inc/vptree.h"
 #include "../inc/quickselect.h"
 
-#define N 100000
-#define D 200
 
 vptree * recbuildvp(double *X, int *index, int n, int d);
 double * findDistance(double *X, int n, int d);
 double median(double *distance, int n);
 
-
-int main()
-{
-
-	// double X[20] = {0.840188, 0.394383, 0.783099, 0.798440, 0.911647, 0.197551, 0.335223, 0.768230, 0.277775, 0.553970,
- //      0.477397, 0.628871, 0.364784, 0.513401, 0.952230, 0.916195, 0.635712, 0.717297, 0.141603, 0.606969};
-	srand(time(NULL));
-	double *X = malloc(N * D * sizeof(double));
-	for(int i=0;i<D;i++)
-	{
-		for(int j=0;j<N;j++)
-		{
-			*(X+i*N+j) = (double)(rand()%10+1);
-			//printf("%f\n",*(X+i*N+j) );
-		}
-	}
-	struct timeval start,end;
-    double time=0;
-    gettimeofday(&start,NULL);
-	buildvp(X,N,D);
-	gettimeofday(&end,NULL);
-	time = (double)((end.tv_usec-start.tv_usec)/1.0e6 + end.tv_sec - start.tv_sec);
-	printf("Time: %f\n",time );
-	free(X);
-	return 0;
-}
 
 vptree * buildvp(double *X, int n, int d)
 {
@@ -77,7 +49,8 @@ vptree * recbuildvp(double *X, int *index, int n, int d)
 		return T;	
 	}
 
-	T = calloc(1,sizeof(vptree));	
+	T = calloc(1,sizeof(vptree));
+
 	//Find Vantage Point
 	T->vp = malloc(d*sizeof(double));
 	for(int i=0;i<d;i++)
@@ -134,8 +107,6 @@ vptree * recbuildvp(double *X, int *index, int n, int d)
 			for(int j=0;j<d;j++)
 			{
 				*(inner+in+innersize*j) = *(X+i+n*j);
-				//printf("Inner %d - %f\n",in+innersize*j,*(inner+in+innersize*j) );
-
 			}
 			in++;
 		}
@@ -145,7 +116,6 @@ vptree * recbuildvp(double *X, int *index, int n, int d)
 			for(int j=0;j<d;j++)
 			{
 				*(outer+out+outersize*j) = *(X+i+n*j);
-				//printf("Outer %d - %f\n", out+outersize*j, *(outer+out+outersize*j));
 			}
 			out++;
 		}
@@ -157,6 +127,7 @@ vptree * recbuildvp(double *X, int *index, int n, int d)
 	printf("\t\tidx: %d\n",T->idx );
 	printf("\t\tmedian: %f\n", T->md );
 	printf("\t\tvp: %f %f \n",T->vp[0],T->vp[1]);*/
+
 	if(omp_get_active_level()<5)
 	{	
 		#pragma omp parallel
@@ -206,7 +177,6 @@ double * findDistance(double *X, int n, int d)
 				*(distance+i) += (*(X+n*j+i) - *(X+n*j+n-1))*(*(X+n*j+i) - *(X+n*j+n-1));
 			}
 			*(distance+i) = sqrt(*(distance+i));
-			//printf("%f\n", distance[i]);
 		}
 		return distance;
 	}
@@ -217,7 +187,6 @@ double * findDistance(double *X, int n, int d)
 			*(distance+i) += (*(X+n*j+i) - *(X+n*j+n-1))*(*(X+n*j+i) - *(X+n*j+n-1));
 		}
 		*(distance+i) = sqrt(*(distance+i));
-		//printf("%f\n", distance[i]);
 	}
 	return distance;
 
@@ -229,12 +198,10 @@ double median(double *distance, int n)
 	if((n-1)%2!=0)
 	{
 		md = ksmallest(distance,n-1,(n-1)/2+1);
-		//printf("\nMedian = %f\n", md);
 	}
 	else
 	{
 		md = (ksmallest(distance,n-1,(n-1)/2+1)+ksmallest(distance,n-1,(n-1)/2))/2;
-		//printf("\nMedian = %f\n", md);
 	}
 	return md;
 }

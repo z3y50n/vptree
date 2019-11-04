@@ -4,6 +4,7 @@ CC = gcc-7
 .PHONY: lib
 
 lib:
+	mkdir lib
 	cd src; gcc -c vptree_sequential.c; cd ..
 	cd src; gcc -c -pthread vptree_pthreads.c; cd ..
 	cd src; gcc -c -fcilkplus vptree_cilk.c; cd ..
